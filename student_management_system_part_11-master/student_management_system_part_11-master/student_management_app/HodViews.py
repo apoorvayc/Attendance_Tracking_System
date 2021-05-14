@@ -110,6 +110,7 @@ def add_course_save(request):
             return HttpResponseRedirect(reverse("add_course"))
 
 def add_student(request):
+    print("here 2")
     form=AddStudentForm()
     return render(request,"hod_template/add_student_template.html",{"form":form})
 

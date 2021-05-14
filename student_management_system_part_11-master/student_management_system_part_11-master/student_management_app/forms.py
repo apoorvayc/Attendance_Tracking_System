@@ -11,6 +11,7 @@ class DateInput(forms.DateInput):
     input_type = "date"
 
 class AddStudentForm(forms.Form):
+    print("here")
     email=forms.EmailField(label="Email",max_length=50,widget=forms.EmailInput(attrs={"class":"form-control","autocomplete":"off"}))
     password=forms.CharField(label="Password",max_length=50,widget=forms.PasswordInput(attrs={"class":"form-control"}))
     first_name=forms.CharField(label="First Name",max_length=50,widget=forms.TextInput(attrs={"class":"form-control"}))
@@ -30,11 +31,12 @@ class AddStudentForm(forms.Form):
     session_list = []
     try:
         sessions = SessionYearModel.object.all()
-
+        print(sessions)
         for ses in sessions:
             small_ses = (ses.id, str(ses.session_start_year)+"   TO  "+str(ses.session_end_year))
             session_list.append(small_ses)
     except:
+        print("here err ")
         session_list=[]
 
     gender_choice=(
