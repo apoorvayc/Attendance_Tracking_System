@@ -38,27 +38,18 @@
             <a href="{{ staff_take_attendance }}" class="nav-link {% if request.path == staff_take_attendance %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                Take Attendance
+                Start Lecture
               </p>
             </a>
           </li>
-           <li class="nav-item">
-            {% url 'staff_update_attendance' as staff_update_attendance %}
-            <a href="{{ staff_update_attendance }}" class="nav-link {% if request.path == staff_update_attendance %} active {% endif %}">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                View Update Attendance
-              </p>
-            </a>
-          </li>
-          
+ 
 
            <li class="nav-item">
-            {% url 'staff_all_notification' as staff_all_notification %}
-            <a href="{{ staff_all_notification }}" class="nav-link {% if request.path == staff_all_notification %} active {% endif %}">
+            {% url 'staff_send_notification_student' as staff_send_notification_student %}
+            <a href="{{ staff_send_notification_student }}" class="nav-link {% if request.path == staff_send_notification_student %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                Notifications
+                Send Notification
               </p>
             </a>
           </li>
