@@ -13,6 +13,8 @@ from django.views.decorators.csrf import csrf_exempt
 from student_management_app.models import Subjects, SessionYearModel, Students, Attendance, \
      Staffs, CustomUser, Courses, NotificationStaffs, CourseCount, NotificationStudent
 
+
+
 from datetime import date
 import datetime
 def staff_home(request):

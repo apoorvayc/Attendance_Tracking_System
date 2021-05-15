@@ -5,8 +5,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime
 
-from student_management_app.models import Students, Courses, Subjects, CustomUser, Attendance, \
+
+from student_management_app.models import Students, Courses, Subjects, CustomUser, Attendance, CourseCount,\
      NotificationStudent
 
 
@@ -29,18 +31,13 @@ def student_view_attendance(request):
 
 def student_view_attendance_post(request):
     subject_id=request.POST.get("subject")
-    start_date=request.POST.get("start_date")
-    end_date=request.POST.get("end_date")
+      
+    student=Students.objects.get(admin=request.user.id)
+    attendance = Attendance.objects.filter(student_id=student.id, subject_id=subject_id)
 
-    start_data_parse=datetime.datetime.strptime(start_date,"%Y-%m-%d").date()
-    end_data_parse=datetime.datetime.strptime(end_date,"%Y-%m-%d").date()
-    subject_obj=Subjects.objects.get(id=subject_id)
-    user_object=CustomUser.objects.get(id=request.user.id)
-    stud_obj=Students.objects.get(admin=user_object)
-
-    attendance=Attendance.objects.filter(attendance_date__range=(start_data_parse,end_data_parse),subject_id=subject_obj)
-    attendance_reports=AttendanceReport.objects.filter(attendance_id__in=attendance,student_id=stud_obj)
-    return render(request,"student_template/student_attendance_data.html",{"attendance_reports":attendance_reports})
+    # attendance=Attendance.objects.filter(attendance_date__range=(start_data_parse,end_data_parse),subject_id=subject_obj)
+    # attendance_reports=AttendanceReport.objects.filter(attendance_id__in=attendance,student_id=stud_obj)
+    return render(request,"student_template/student_attendance_data.html", {"attendance_reports":attendance})
 
 def student_mark_attendance(request):
     student=Students.objects.get(admin=request.user.id)
@@ -48,6 +45,20 @@ def student_mark_attendance(request):
     subjects=Subjects.objects.filter(course_id=course)
     return render(request,"student_template/student_mark_attendance.html",{"subjects":subjects})
 
+def student_mark_attendance_check_course(request):
+    student=Students.objects.get(admin=request.user.id)
+    subject_id=request.POST.get("subject")
+    is_lecture = CourseCount.objects.get(subject_id=subject_id)
+    lecture_date = is_lecture.updated_at
+    if lecture_date == datetime.date(datetime.now()):
+        attendance = Attendance.objects.filter(student_id=student.id, subject_id=subject_id, status=False, attendance_date=datetime.date(datetime.now()))
+        if attendance:
+            Attendance.objects.filter(student_id=student.id, subject_id=subject_id, attendance_date=datetime.date(datetime.now())).update(status= True)
+            attendance = Attendance.objects.filter(student_id=student.id, subject_id=subject_id)
+            return render(request,"student_template/student_attendance_data.html", {"attendance_reports":attendance})
+        else:
+            return render(request, "student_template/student_attendance_already_marked.html")
+    return render(request, "student_template/student_no_lecture.html")
 
 
 def student_profile(request):
