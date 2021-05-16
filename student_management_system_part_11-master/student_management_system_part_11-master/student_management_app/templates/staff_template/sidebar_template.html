@@ -43,6 +43,16 @@
             </a>
           </li>
  
+           <li class="nav-item">
+            {% url 'view_all_courses' as view_all_courses %}
+            <a href="{{ view_all_courses }}" class="nav-link {% if request.path == view_all_courses %} active {% endif %}">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                View Attendance
+              </p>
+            </a>
+          </li>
+ 
 
            <li class="nav-item">
             {% url 'staff_send_notification_student' as staff_send_notification_student %}

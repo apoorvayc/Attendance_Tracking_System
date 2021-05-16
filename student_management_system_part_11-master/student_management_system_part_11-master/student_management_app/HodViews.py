@@ -47,7 +47,9 @@ def admin_home(request):
     for staff in staffs:
         subject_ids=Subjects.objects.filter(staff_id=staff.admin.id)
         attendance=Attendance.objects.filter(subject_id__in=subject_ids).count()
+        leaves=LeaveReportStaff.objects.filter(staff_id=staff.id,leave_status=1).count()
         attendance_present_list_staff.append(attendance)
+        attendance_absent_list_staff.append(leaves)
         staff_name_list.append(staff.admin.username)
 
     students_all=Students.objects.all()
@@ -55,6 +57,11 @@ def admin_home(request):
     attendance_absent_list_student=[]
     student_name_list=[]
     for student in students_all:
+        attendance=AttendanceReport.objects.filter(student_id=student.id,status=True).count()
+        absent=AttendanceReport.objects.filter(student_id=student.id,status=False).count()
+        leaves=LeaveReportStudent.objects.filter(student_id=student.id,leave_status=1).count()
+        attendance_present_list_student.append(attendance)
+        attendance_absent_list_student.append(leaves+absent)
         student_name_list.append(student.admin.username)
 
 
@@ -102,7 +109,6 @@ def add_course_save(request):
             return HttpResponseRedirect(reverse("add_course"))
 
 def add_student(request):
-    print("here 2")
     form=AddStudentForm()
     return render(request,"hod_template/add_student_template.html",{"form":form})
 

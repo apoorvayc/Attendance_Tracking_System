@@ -13,8 +13,6 @@ from django.views.decorators.csrf import csrf_exempt
 from student_management_app.models import Subjects, SessionYearModel, Students, Attendance, \
      Staffs, CustomUser, Courses, NotificationStaffs, CourseCount, NotificationStudent
 
-
-
 from datetime import date
 import datetime
 def staff_home(request):
@@ -101,37 +99,6 @@ def staff_fcmtoken_save(request):
     except:
         return HttpResponse("False")
 
-
-@csrf_exempt
-def create_attendance_list(request):
-
-    try :
-        currentcourse = CourseCount.objects.get(subject_id=request.POST.get("subject"))
-        courseid = Subjects.objects.get(id=request.POST.get("subject")).course_id
-        if (currentcourse.updated_at != date.today()) :
-            currentcourse.updated_at = date.today()
-            currentcourse.count_lectures = currentcourse.count_lectures+1
-            currentcourse.save()
-            students = Students.objects.filter(course_id=courseid)
-            for i in students:
-                print(i)
-                attendance = Attendance(student_id=Students.objects.get(id=i.id), subject_id=Subjects.objects.get(id=request.POST.get("subject")))
-                attendance.save()
-            messages.success(request, "Successfully Added Attendance Sheet")
-        else :
-            messages.error(request, "Already Added Attendance Sheet")
-    except :
-        updatecount = CourseCount(subject_id= Subjects.objects.get(id=request.POST.get("subject")), count_lectures= 1)
-        updatecount.save()
-        students = Students.objects.all()
-        for i in students:
-            attendance = Attendance(student_id=Students.objects.get(id=i.id), subject_id=Subjects.objects.get(id=request.POST.get("subject")))
-            attendance.save()
-        messages.success(request, "Successfully Added Attendance Sheet 2")
-    subjects=Subjects.objects.filter(staff_id=request.user.id)
-    
-    return render(request,"staff_template/staff_start_lecture.html",{"subjects":subjects})
-
     #     return HttpResponse("ERR")
 def view_all_courses(request):
 
@@ -187,3 +154,32 @@ def send_student_notification(request):
     notification.save()
     # print(data.text)
     return HttpResponseRedirect(reverse("staff_home"))
+
+@csrf_exempt
+def create_attendance_list(request):
+
+    try :
+        currentcourse = CourseCount.objects.get(subject_id=request.POST.get("subject"))
+        courseid = Subjects.objects.get(id=request.POST.get("subject")).course_id
+        if (currentcourse.updated_at != date.today()) :
+            currentcourse.updated_at = date.today()
+            currentcourse.count_lectures = currentcourse.count_lectures+1
+            currentcourse.save()
+            students = Students.objects.filter(course_id=courseid)
+            for i in students:
+                print(i)
+                attendance = Attendance(student_id=Students.objects.get(id=i.id), subject_id=Subjects.objects.get(id=request.POST.get("subject")))
+                attendance.save()
+            messages.success(request, "Successfully Added Attendance Sheet")
+        else :
+            messages.error(request, "Already Added Attendance Sheet")
+    except :
+        updatecount = CourseCount(subject_id= Subjects.objects.get(id=request.POST.get("subject")), count_lectures= 1)
+        updatecount.save()
+        students = Students.objects.all()
+        for i in students:
+            attendance = Attendance(student_id=Students.objects.get(id=i.id), subject_id=Subjects.objects.get(id=request.POST.get("subject")))
+            attendance.save()
+        messages.success(request, "Successfully Added Attendance Sheet 2")
+    subjects=Subjects.objects.filter(staff_id=request.user.id)
+    return render(request,"staff_template/staff_start_lecture.html",{"subjects":subjects})

@@ -80,7 +80,6 @@ urlpatterns = [
     path('staff_profile', StaffViews.staff_profile, name="staff_profile"),
     path('staff_profile_save', StaffViews.staff_profile_save, name="staff_profile_save"),
     path('staff_fcmtoken_save', StaffViews.staff_fcmtoken_save, name="staff_fcmtoken_save"),
-    
 
     path('student_home', StudentViews.student_home, name="student_home"),
     path('student_view_attendance', StudentViews.student_view_attendance, name="student_view_attendance"),
@@ -92,7 +91,6 @@ urlpatterns = [
     # -----
     path('student_fcmtoken_save', StudentViews.student_fcmtoken_save, name="student_fcmtoken_save"),
 
-    path('firebase-messaging-sw.js',views.showFirebaseJS,name="show_firebase_js"),
     # -----
     path('student_all_notification',StudentViews.student_all_notification,name="student_all_notification"),
 
